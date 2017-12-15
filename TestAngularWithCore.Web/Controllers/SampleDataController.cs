@@ -8,12 +8,7 @@ namespace TestAngularWithCore_Web.Controllers
 {
     [Route("api/[controller]")]
     public class SampleDataController : Controller
-    { 
-        private static string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
+    {
         private static string[] BookNames = new string[]
         {
             "The Chronicles of Narnia", "Romeo and Juliet", "Harry Potter and the Deathly Hallows (Harry Potter #7)", "The Hobbit", "The Help",
@@ -38,38 +33,12 @@ namespace TestAngularWithCore_Web.Controllers
             "02/04/2008", "20/10/2010", "05/01/2014", "30/06/2015", "12/03/2006", "14/09/2013", "04/07/2009", "25/11/2012", "21/12/2016", "16/08/2011", "06/01/2004", "19/06/2007", "17/05/2017"
         };
 
-        [HttpGet("[action]")]
-        public IEnumerable<WeatherForecast> WeatherForecasts()
-        {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                DateFormatted = DateTime.Now.AddDays(index).ToString("d"),
-                TemperatureC = rng.Next(-20, 55),
-                Summary = Summaries[rng.Next(Summaries.Length)]
-            });
-        }
-
-        public class WeatherForecast
-        {
-            public string DateFormatted { get; set; }
-            public int TemperatureC { get; set; }
-            public string Summary { get; set; }
-
-            public int TemperatureF
-            {
-                get
-                {
-                    return 32 + (int)(TemperatureC / 0.5556);
-                }
-            }
-        }
-
         public class BookResult
         {
             public int total { get; set; }
             public Book[] books { get; set; }
         }
+
         public class Book
         {
             public string Id { get; set; }
@@ -83,19 +52,30 @@ namespace TestAngularWithCore_Web.Controllers
         public BookResult BookDetails(int page, int limit)
         {
             var rng = new Random();
-            var data = Enumerable.Range(1, 13).Select(index => new Book
-            {
-                Id = rng.Next().ToString(),
-                Name = BookNames[rng.Next(BookNames.Length)],
-                Authors = Authors[rng.Next(Authors.Length)],
-                NumOfPages = NumberOfPages[rng.Next(NumberOfPages.Length)],
-                DateOfPublication = DateOfPublication[rng.Next(DateOfPublication.Length)]
-            });
-
+            var data = GetBooks();
             var skip = (limit * (page - 1));
             var total = data.Count();
-            var dataarray = data.Skip(skip).Take(limit).ToArray();
+            var dataarray = data.OrderBy(b => b.Name).Skip(skip).Take(limit).ToArray();
             return new BookResult { total=total,books= dataarray };
+        }
+
+        private IEnumerable<Book> GetBooks()
+        {
+            var booksList = new List<Book>();
+            for(var i = 0; i < 13; i++)
+            {
+                var id = i + 1;
+                var book = new Book()
+                {
+                    Id = id.ToString(),
+                    Name = BookNames[i],
+                    Authors = Authors[i],
+                    NumOfPages = NumberOfPages[i],
+                    DateOfPublication = DateOfPublication[i]
+                };
+                booksList.Add(book);
+            }
+            return booksList;
         }
 
         [HttpPost("[action]")]

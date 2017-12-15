@@ -29,7 +29,6 @@ export class BooksComponent {
 
     refreshBooks() {
         this.http.get(this.baseurl + 'api/SampleData/BookDetails?page=' + this.page + "&limit=" + this.limit).subscribe(res => {
-           // this.books = res.json() as BookList[];
             var dataresult = res.json();
             this.total = dataresult.total;
             this.books = dataresult.books as BookList[];
@@ -55,6 +54,7 @@ export class BooksComponent {
         let options = new RequestOptions({ headers: headers });
         let body = JSON.stringify(this.book);
         this.http.post(this.baseurl + 'api/SampleData/UpdateBookDetails', body, options).subscribe((res: Response) => res.json());
+        this.isEdit = false;
     }
     goToPage(n: number): void {
         this.page = n;
@@ -70,12 +70,12 @@ export class BooksComponent {
         this.page--;
         this.refreshBooks();
     }
-
 }
 
 export class BookList {
 
     constructor(
+        public id: string,
         public name: string,
         public authors: string,
         public numOfPages: string,
