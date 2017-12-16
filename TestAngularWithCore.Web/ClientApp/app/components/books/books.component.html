@@ -1,6 +1,6 @@
-﻿<h1>Book List</h1>
+﻿<h1>Books</h1>
 
-<p>List of books with different geners.</p>
+<p *ngIf="!book">List of books with different genres.</p>
 
 <p *ngIf="!books"><em>Loading...</em></p>
 
@@ -40,33 +40,56 @@
         <div>
             <h1>Update Book details</h1>
             <form (ngSubmit)="onSubmit()" #bookForm="ngForm">
+                <input type="hidden" id="bookid" name="bookid"
+                       [(ngModel)]="book.id" #bookid="ngModel">
+
                 <div class="form-group">
                     <label for="bookname">Name</label>
                     <input type="text" class="form-control" id="bookname"
+                           required
                            [(ngModel)]="book.name" name="bookname"
                            #bookname="ngModel">
+                    <div [hidden]="bookname.valid || bookname.pristine"
+                         class="alert alert-danger">
+                        Name is required
+                    </div>
                 </div>
                 
                 <div class="form-group">
                     <label for="bookauthor">Authors</label>
                     <input type="text" class="form-control" id="bookauthor"
+                           required
                            [(ngModel)]="book.authors" name="bookauthor"
                            #bookauthor="ngModel">
+                    <div [hidden]="bookauthor.valid || bookauthor.pristine"
+                         class="alert alert-danger">
+                        Please enter Author Name
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label for="totalpages">NumOfPages</label>
+                    <label for="totalpages">Pages</label>
                     <input type="text" class="form-control" id="totalpages"
+                           required
                            [(ngModel)]="book.numOfPages" name="totalpages"
                            #totalpages="ngModel">
+                    <div [hidden]="totalpages.valid || totalpages.pristine"
+                         class="alert alert-danger">
+                        Please enter number of pages
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="bookpublished">Date Of Publication</label>
                     <input type="text" class="form-control" id="bookpublished"
+                           required
                            [(ngModel)]="book.dateOfPublication" name="bookpublished"
                            #bookpublished="ngModel">
+                    <div [hidden]="bookpublished.valid || bookpublished.pristine"
+                         class="alert alert-danger">
+                        Please enter book published date
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-success" [disabled]="!book.form.valid">Save</button>
+                <button type="submit" class="btn btn-success" [disabled]="!bookForm.form.valid">Save</button>
                 <button type="button" class="btn btn-default" (click)="cancelEdit()">Cancel</button>
             </form>
         </div>
